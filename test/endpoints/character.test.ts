@@ -63,4 +63,53 @@ describe('character endpoints', () => {
     expect(fetchImpl.mock.calls[0][0]).toContain('/profile/wow/character/ravencrest/thrall/encounters/raids');
     expect(fetchImpl.mock.calls[0][0]).toContain('namespace=profile-eu');
   });
+
+  it('calls character achievements endpoint', async () => {
+    const { wow, fetchImpl } = setup();
+    await (wow as { getCharacterAchievements: (arg: { realmSlug: string; characterName: string }) => Promise<unknown> }).getCharacterAchievements({ realmSlug: 'ravencrest', characterName: 'thrall' });
+    expect(fetchImpl.mock.calls[0][0]).toContain('/profile/wow/character/ravencrest/thrall/achievements');
+    expect(fetchImpl.mock.calls[0][0]).toContain('namespace=profile-eu');
+  });
+
+  it('calls character achievement statistics endpoint', async () => {
+    const { wow, fetchImpl } = setup();
+    await (wow as { getCharacterAchievementStatistics: (arg: { realmSlug: string; characterName: string }) => Promise<unknown> }).getCharacterAchievementStatistics({ realmSlug: 'ravencrest', characterName: 'thrall' });
+    expect(fetchImpl.mock.calls[0][0]).toContain('/profile/wow/character/ravencrest/thrall/achievements/statistics');
+    expect(fetchImpl.mock.calls[0][0]).toContain('namespace=profile-eu');
+  });
+
+  it('calls character collections endpoint', async () => {
+    const { wow, fetchImpl } = setup();
+    await (wow as { getCharacterCollections: (arg: { realmSlug: string; characterName: string }) => Promise<unknown> }).getCharacterCollections({ realmSlug: 'ravencrest', characterName: 'thrall' });
+    expect(fetchImpl.mock.calls[0][0]).toContain('/profile/wow/character/ravencrest/thrall/collections');
+    expect(fetchImpl.mock.calls[0][0]).toContain('namespace=profile-eu');
+  });
+
+  it('calls character mounts collection endpoint', async () => {
+    const { wow, fetchImpl } = setup();
+    await (wow as { getCharacterMountsCollection: (arg: { realmSlug: string; characterName: string }) => Promise<unknown> }).getCharacterMountsCollection({ realmSlug: 'ravencrest', characterName: 'thrall' });
+    expect(fetchImpl.mock.calls[0][0]).toContain('/profile/wow/character/ravencrest/thrall/collections/mounts');
+    expect(fetchImpl.mock.calls[0][0]).toContain('namespace=profile-eu');
+  });
+
+  it('calls character pets collection endpoint', async () => {
+    const { wow, fetchImpl } = setup();
+    await (wow as { getCharacterPetsCollection: (arg: { realmSlug: string; characterName: string }) => Promise<unknown> }).getCharacterPetsCollection({ realmSlug: 'ravencrest', characterName: 'thrall' });
+    expect(fetchImpl.mock.calls[0][0]).toContain('/profile/wow/character/ravencrest/thrall/collections/pets');
+    expect(fetchImpl.mock.calls[0][0]).toContain('namespace=profile-eu');
+  });
+
+  it('calls character toys collection endpoint', async () => {
+    const { wow, fetchImpl } = setup();
+    await (wow as { getCharacterToysCollection: (arg: { realmSlug: string; characterName: string }) => Promise<unknown> }).getCharacterToysCollection({ realmSlug: 'ravencrest', characterName: 'thrall' });
+    expect(fetchImpl.mock.calls[0][0]).toContain('/profile/wow/character/ravencrest/thrall/collections/toys');
+    expect(fetchImpl.mock.calls[0][0]).toContain('namespace=profile-eu');
+  });
+
+  it('calls character heirlooms collection endpoint', async () => {
+    const { wow, fetchImpl } = setup();
+    await (wow as { getCharacterHeirloomsCollection: (arg: { realmSlug: string; characterName: string }) => Promise<unknown> }).getCharacterHeirloomsCollection({ realmSlug: 'ravencrest', characterName: 'thrall' });
+    expect(fetchImpl.mock.calls[0][0]).toContain('/profile/wow/character/ravencrest/thrall/collections/heirlooms');
+    expect(fetchImpl.mock.calls[0][0]).toContain('namespace=profile-eu');
+  });
 });

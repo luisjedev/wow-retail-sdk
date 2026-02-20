@@ -18,6 +18,13 @@ describe('public api', () => {
     expect(typeof wow.getCharacterEncounters).toBe('function');
     expect(typeof wow.getCharacterDungeons).toBe('function');
     expect(typeof wow.getCharacterRaids).toBe('function');
+    expect(typeof wow.getCharacterAchievements).toBe('function');
+    expect(typeof wow.getCharacterAchievementStatistics).toBe('function');
+    expect(typeof wow.getCharacterCollections).toBe('function');
+    expect(typeof wow.getCharacterMountsCollection).toBe('function');
+    expect(typeof wow.getCharacterPetsCollection).toBe('function');
+    expect(typeof wow.getCharacterToysCollection).toBe('function');
+    expect(typeof wow.getCharacterHeirloomsCollection).toBe('function');
     expect(typeof wow.getCharacterPvpSummary).toBe('function');
     expect(typeof wow.getCharacterPvpBracket).toBe('function');
     expect(typeof wow.getPvpSeasonsIndex).toBe('function');

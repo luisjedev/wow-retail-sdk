@@ -21,5 +21,19 @@ export function buildCharacterEndpoints(ctx: {
       ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/encounters/dungeons`, namespace: `profile-${ctx.region}` }),
     getCharacterRaids: ({ realmSlug, characterName }: { realmSlug: string; characterName: string }) =>
       ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/encounters/raids`, namespace: `profile-${ctx.region}` }),
+    getCharacterAchievements: ({ realmSlug, characterName }: { realmSlug: string; characterName: string }) =>
+      ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/achievements`, namespace: `profile-${ctx.region}` }),
+    getCharacterAchievementStatistics: ({ realmSlug, characterName }: { realmSlug: string; characterName: string }) =>
+      ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/achievements/statistics`, namespace: `profile-${ctx.region}` }),
+    getCharacterCollections: ({ realmSlug, characterName }: { realmSlug: string; characterName: string }) =>
+      ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/collections`, namespace: `profile-${ctx.region}` }),
+    getCharacterMountsCollection: ({ realmSlug, characterName }: { realmSlug: string; characterName: string }) =>
+      ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/collections/mounts`, namespace: `profile-${ctx.region}` }),
+    getCharacterPetsCollection: ({ realmSlug, characterName }: { realmSlug: string; characterName: string }) =>
+      ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/collections/pets`, namespace: `profile-${ctx.region}` }),
+    getCharacterToysCollection: ({ realmSlug, characterName }: { realmSlug: string; characterName: string }) =>
+      ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/collections/toys`, namespace: `profile-${ctx.region}` }),
+    getCharacterHeirloomsCollection: ({ realmSlug, characterName }: { realmSlug: string; characterName: string }) =>
+      ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/collections/heirlooms`, namespace: `profile-${ctx.region}` }),
   };
 }
