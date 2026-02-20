@@ -1,1 +1,1 @@
-export const createWowClient = () => ({});
+export { createWowClient } from './client/create-wow-client';
