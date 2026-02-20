@@ -1,6 +1,7 @@
 import type { WowClientConfig } from '../types/config';
 import { requestJson } from '../http/request';
 import { buildCharacterEndpoints } from '../endpoints/character';
+import { buildPvpCharacterEndpoints } from '../endpoints/pvp-character';
 
 export function createWowClient(config: WowClientConfig) {
   if (!config?.tokenProvider) throw new Error('tokenProvider is required');
@@ -21,5 +22,6 @@ export function createWowClient(config: WowClientConfig) {
 
   return {
     ...buildCharacterEndpoints({ region: config.region, request }),
+    ...buildPvpCharacterEndpoints({ region: config.region, request }),
   };
 }
