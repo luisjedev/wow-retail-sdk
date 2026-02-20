@@ -1,14 +1,47 @@
 {
   "name": "wow-retail-sdk",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "description": "Framework-agnostic TypeScript SDK for World of Warcraft Retail public APIs",
+  "keywords": [
+    "world-of-warcraft",
+    "wow",
+    "blizzard",
+    "sdk",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luisjedev/wow-retail-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/luisjedev/wow-retail-sdk/issues"
+  },
+  "homepage": "https://github.com/luisjedev/wow-retail-sdk#readme",
+  "license": "UNLICENSED",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepublishOnly": "npm run test && npm run build"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",

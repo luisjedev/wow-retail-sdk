@@ -139,3 +139,41 @@ try {
 npm run test
 npm run build
 ```
+
+## Publishing to npm
+
+1. Authenticate with npm:
+
+```bash
+npm login
+npm whoami
+```
+
+2. Verify package contents before publish:
+
+```bash
+npm run build
+npm pack --dry-run
+```
+
+3. Publish (first release):
+
+```bash
+npm publish --access public
+```
+
+4. Publish next versions:
+
+```bash
+npm version patch
+git push --follow-tags
+npm publish
+```
+
+Install commands for consumers:
+
+```bash
+npm i wow-retail-sdk
+pnpm add wow-retail-sdk
+yarn add wow-retail-sdk
+```
