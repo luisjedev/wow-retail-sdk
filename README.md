@@ -1,4 +1,4 @@
-# wow-sdk
+# wow-retail-sdk
 
 A framework-agnostic TypeScript SDK for consuming the public World of Warcraft (Blizzard) API with one function per endpoint.
 
@@ -34,7 +34,7 @@ npm install
 ## Quick start
 
 ```ts
-import { createWowClient } from 'wow-sdk';
+import { createWowClient } from 'wow-retail-sdk';
 
 const wow = createWowClient({
   region: 'eu',
@@ -122,7 +122,7 @@ The SDK exports typed errors from `src/errors.ts`:
 Example:
 
 ```ts
-import { WowNotFoundError } from 'wow-sdk';
+import { WowNotFoundError } from 'wow-retail-sdk';
 
 try {
   await wow.getCharacterProfile({ realmSlug: 'ravencrest', characterName: 'unknown' });
