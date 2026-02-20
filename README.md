@@ -2,6 +2,10 @@
 
 A framework-agnostic TypeScript SDK for consuming the public World of Warcraft (Blizzard) API with one function per endpoint.
 
+Playground example app (Next.js + Server Actions):
+
+- https://github.com/luisjedev/wow-retail-playground
+
 ## Current status
 
 Current coverage includes:
@@ -25,53 +29,172 @@ This SDK is designed to receive a `tokenProvider` that returns a bearer token ge
 
 ## Installation
 
-While the package is not published yet, use it locally in this repository.
-
 ```bash
-npm install
+npm i wow-retail-sdk
+# or
+pnpm add wow-retail-sdk
+# or
+yarn add wow-retail-sdk
 ```
 
-## Quick start
+## Real flow (playground)
+
+Flow requested (playground architecture):
+
+1. `wow-client`
+2. `getBlizzardAccessToken`
+3. `getCharacterProfile-call`
+4. `getCharacterProfile-action`
+
+Reference implementation:
+
+- https://github.com/luisjedev/wow-retail-playground
+
+### 1) `wow-client` (`lib/wow-client.ts`)
+
+Shared server-side client with secure token provider:
 
 ```ts
-import { createWowClient } from 'wow-retail-sdk';
+import { cache } from "react";
+import { createWowClient } from "wow-retail-sdk";
+import { getBlizzardAccessToken } from "@/lib/blizzard";
+import { getServerEnv } from "@/lib/env";
 
-const wow = createWowClient({
-  region: 'eu',
-  locale: 'es_ES',
-  tokenProvider: async () => getTokenFromMyBackend(),
-});
+export const getWowClient = cache(() => {
+  const env = getServerEnv();
 
-const profile = await wow.getCharacterProfile({
-  realmSlug: 'ravencrest',
-  characterName: 'thrall',
+  return createWowClient({
+    region: env.wowRegion,
+    locale: env.wowLocale,
+    tokenProvider: async () => {
+      const tokenData = await getBlizzardAccessToken();
+      return tokenData.access_token;
+    },
+  });
 });
 ```
 
-## Client configuration
+### 2) `getBlizzardAccessToken` (`lib/blizzard.ts`)
 
-`createWowClient(config)` accepts:
-
-- `region`: `'us' | 'eu' | 'kr' | 'tw'`
-- `locale`: for example `'es_ES'`, `'en_US'`
-- `tokenProvider`: `() => Promise<string>`
-- `fetchImpl` (optional): custom `fetch` implementation for tests or specific runtimes
-
-`tokenProvider` example with in-memory caching:
+The token function is used by `tokenProvider` and stays server-side.
 
 ```ts
-let cachedToken: string | null = null;
-let expiresAt = 0;
+import { getServerEnv } from "@/lib/env";
+import type { WowRegion } from "wow-retail-sdk";
 
-async function tokenProvider() {
-  if (cachedToken && Date.now() < expiresAt) return cachedToken;
+type BlizzardTokenResponse = {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  scope?: string;
+};
 
-  const response = await fetch('https://mi-backend.com/blizzard/token');
-  const data = await response.json();
+function getOauthUrl(region: WowRegion): string {
+  return "https://oauth.battle.net/token";
+}
 
-  cachedToken = data.access_token;
-  expiresAt = Date.now() + (data.expires_in - 60) * 1000;
-  return cachedToken;
+export async function getBlizzardAccessToken(): Promise<BlizzardTokenResponse> {
+  const env = getServerEnv();
+  const oauthUrl = getOauthUrl(env.wowRegion);
+  const credentials = Buffer.from(`${env.blizzardClientId}:${env.blizzardClientSecret}`).toString("base64");
+
+  const response = await fetch(oauthUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${credentials}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "grant_type=client_credentials",
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const responseText = await response.text();
+    throw new Error(`Token request failed: ${response.status} ${responseText}`);
+  }
+
+  return (await response.json()) as BlizzardTokenResponse;
+}
+```
+
+### 3) `getCharacterProfile-call` (`components/calls/getCharacterProfile-call.tsx`)
+
+UI block that triggers the server action:
+
+```tsx
+"use client";
+
+import { useActionState } from "react";
+import { getCharacterProfileAction } from "@/app/actions/calls/getCharacterProfile-action";
+
+export function GetCharacterProfileCall() {
+  const [state, formAction, isPending] = useActionState(getCharacterProfileAction, {
+    responseText: "",
+    data: null,
+    error: null,
+  });
+
+  return (
+    <form action={formAction}>
+      <input type="text" name="realmSlug" defaultValue="zuljin" />
+      <input type="text" name="characterName" defaultValue="ragekun" />
+      <button type="submit" disabled={isPending}>{isPending ? "Running..." : "Run"}</button>
+
+      {state.data ? (
+        <div>
+          <p>Name: {state.data.name}</p>
+          <p>Level: {state.data.level}</p>
+          <p>Realm: {state.data.realm?.name ?? "Unknown"}</p>
+        </div>
+      ) : null}
+
+      <textarea value={state.responseText} readOnly rows={20} />
+    </form>
+  );
+}
+```
+
+### 4) `getCharacterProfile-action` (`app/actions/calls/getCharacterProfile-action.ts`)
+
+Server action that executes the SDK call:
+
+```ts
+"use server";
+
+import type { CharacterProfileResponse } from "wow-retail-sdk";
+import { getWowClient } from "@/lib/wow-client";
+
+export type GetCharacterProfileActionState = {
+  responseText: string;
+  data: CharacterProfileResponse | null;
+  error: string | null;
+};
+
+export async function getCharacterProfileAction(
+  _: GetCharacterProfileActionState,
+  formData: FormData,
+): Promise<GetCharacterProfileActionState> {
+  try {
+    // parse/normalize formData values...
+    const realmSlug = "zuljin";
+    const characterName = "ragekun";
+
+    const wowClient = getWowClient();
+    const data = await wowClient.getCharacterProfile({ realmSlug, characterName });
+
+    return {
+      responseText: JSON.stringify(data, null, 2),
+      data,
+      error: null,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unexpected error";
+    return {
+      responseText: JSON.stringify({ error: message }, null, 2),
+      data: null,
+      error: message,
+    };
+  }
 }
 ```
 
@@ -138,42 +261,4 @@ try {
 ```bash
 npm run test
 npm run build
-```
-
-## Publishing to npm
-
-1. Authenticate with npm:
-
-```bash
-npm login
-npm whoami
-```
-
-2. Verify package contents before publish:
-
-```bash
-npm run build
-npm pack --dry-run
-```
-
-3. Publish (first release):
-
-```bash
-npm publish --access public
-```
-
-4. Publish next versions:
-
-```bash
-npm version patch
-git push --follow-tags
-npm publish
-```
-
-Install commands for consumers:
-
-```bash
-npm i wow-retail-sdk
-pnpm add wow-retail-sdk
-yarn add wow-retail-sdk
 ```
