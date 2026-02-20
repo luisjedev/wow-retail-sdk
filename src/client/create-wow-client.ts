@@ -11,8 +11,8 @@ export function createWowClient(config: WowClientConfig) {
     config.fetchImpl ??
     ((globalThis.fetch as unknown) as (input: string, init?: { headers?: Record<string, string> }) => Promise<{ ok: boolean; json: () => Promise<unknown> }>);
 
-  const request = ({ path, namespace }: { path: string; namespace: string }) =>
-    requestJson({
+  const request = <T>({ path, namespace }: { path: string; namespace: string }) =>
+    requestJson<T>({
       path,
       namespace,
       region: config.region,

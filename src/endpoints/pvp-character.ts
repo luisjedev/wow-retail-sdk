@@ -1,11 +1,13 @@
+import type { CharacterParams, CharacterPvpBracketParams, CharacterPvpBracketResponse, CharacterPvpSummaryResponse } from '../types/api';
+
 export function buildPvpCharacterEndpoints(ctx: {
   region: string;
-  request: (arg: { path: string; namespace: string }) => Promise<unknown>;
+  request: <T>(arg: { path: string; namespace: string }) => Promise<T>;
 }) {
   return {
-    getCharacterPvpSummary: ({ realmSlug, characterName }: { realmSlug: string; characterName: string }) =>
-      ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/pvp-summary`, namespace: `profile-${ctx.region}` }),
-    getCharacterPvpBracket: ({ realmSlug, characterName, bracket }: { realmSlug: string; characterName: string; bracket: string }) =>
-      ctx.request({ path: `/profile/wow/character/${realmSlug}/${characterName}/pvp-bracket/${bracket}`, namespace: `profile-${ctx.region}` }),
+    getCharacterPvpSummary: ({ realmSlug, characterName }: CharacterParams) =>
+      ctx.request<CharacterPvpSummaryResponse>({ path: `/profile/wow/character/${realmSlug}/${characterName}/pvp-summary`, namespace: `profile-${ctx.region}` }),
+    getCharacterPvpBracket: ({ realmSlug, characterName, bracket }: CharacterPvpBracketParams) =>
+      ctx.request<CharacterPvpBracketResponse>({ path: `/profile/wow/character/${realmSlug}/${characterName}/pvp-bracket/${bracket}`, namespace: `profile-${ctx.region}` }),
   };
 }
