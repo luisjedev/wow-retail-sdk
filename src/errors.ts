@@ -8,7 +8,7 @@ export class WowApiError extends Error {
   }
 }
 
-export class WowNotFoundError extends WowApiError {}
-export class WowAuthError extends WowApiError {}
-export class WowRateLimitError extends WowApiError {}
-export class WowValidationError extends Error {}
+export class WowNotFoundError extends WowApiError { }
+export class WowAuthError extends WowApiError { }
+export class WowRateLimitError extends WowApiError { }
+export class WowValidationError extends Error { }
