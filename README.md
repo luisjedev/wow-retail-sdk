@@ -260,5 +260,31 @@ try {
 
 ```bash
 npm run test
+npm run test:live
+npm run test:all
 npm run build
 ```
+
+### Live integration tests
+
+Live integration tests call Blizzard APIs with real credentials.
+
+Required environment variables:
+
+- `BLIZZARD_CLIENT_ID`
+- `BLIZZARD_CLIENT_SECRET`
+
+Optional environment variables:
+
+- `WOW_TEST_REGION` (default: `eu`)
+- `WOW_TEST_LOCALE` (default: `es_ES`)
+- `WOW_TEST_REALM` (default: `zuljin`)
+- `WOW_TEST_CHARACTER` (default: `ragekun`)
+
+`npm run test` runs unit tests only.
+
+`npm run test:live` runs live integration tests only.
+
+`npm run test:all` runs unit + live tests.
+
+If you configure Husky, the pre-push hook runs `npm run test:all` and blocks pushes when tests fail.

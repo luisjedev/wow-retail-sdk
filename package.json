@@ -1,6 +1,6 @@
 {
   "name": "wow-retail-sdk",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": false,
   "description": "Framework-agnostic TypeScript SDK for World of Warcraft Retail public APIs",
   "keywords": [
@@ -41,10 +41,15 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
+    "test:live": "vitest run --config vitest.live.config.ts",
+    "test:all": "npm run test && npm run test:live",
+    "prepare": "husky",
     "prepublishOnly": "npm run test && npm run build"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
+    "dotenv": "^16.4.7",
+    "husky": "^9.1.7",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2",
     "vitest": "^3.0.8"
